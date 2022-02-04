@@ -29,6 +29,11 @@ class Announce
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
+    public function __construct()
+    {
+        $this->publishedAt = new \DateTime('now');
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,5 +97,10 @@ class Announce
         $this->category = $category;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->title;
     }
 }

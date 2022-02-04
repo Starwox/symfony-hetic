@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
@@ -26,9 +27,9 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/user/new", name="new_user")
+     * @Route("/register", name="register")
      */
-    public function createUser(Request $request)
+    public function createUser(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -36,13 +37,23 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
+
+            // SETTING GOOD DATAS
             $roles = $user->getRoles();
+            $plainpassword = $user->getPassword();
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $plainpassword
+            );
+
             $user->setRoles($roles);
+            $user->setPassword($hashedPassword);
+
             $this->em->persist($user);
             $this->em->flush();
 
 
-            return $this->redirectToRoute('login');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->renderForm('user/new.html.twig', [
@@ -58,6 +69,44 @@ class UserController extends AbstractController
 
         return $this->render('user/list.html.twig', [
             'users' => $users,
+        ]);
+
+    }
+
+    /**
+     * @Route("/user/edit/{id}", name="edit_user")
+     */
+    public function editUser(User $user, UserPasswordHasherInterface $passwordHasher, Request $request)
+    {
+
+        $form = $this->createForm(UserType::class, $user, [
+            'hidden' => true
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            // SETTING GOOD DATAS
+            $roles = $user->getRoles();
+            $plainpassword = $user->getPassword();
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $plainpassword
+            );
+
+            $user->setRoles($roles);
+            $user->setPassword($hashedPassword);
+
+            $this->em->persist($user);
+            $this->em->flush();
+
+
+            return $this->redirectToRoute('list_user');
+        }
+
+        return $this->renderForm('user/new.html.twig', [
+            'form' => $form,
         ]);
 
     }

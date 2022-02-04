@@ -19,6 +19,14 @@ class AnnounceRepository extends ServiceEntityRepository
         parent::__construct($registry, Announce::class);
     }
 
+    public function searchByTitle($title) {
+        return $this->createQueryBuilder('a')
+            ->where('a.title LIKE :title')
+            ->setParameter('title', '%'.$title.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Announce[] Returns an array of Announce objects
     //  */

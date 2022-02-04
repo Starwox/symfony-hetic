@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="container" style="margin-bottom: 5%;">
+        <div class="row">
+            <h1 class="justify-content-center d-flex" style="padding: 15%;">- Achetez ce que vous désirez -</h1>
+        </div>
+        <div class="row">
+            {{ form_start(searchForm, { 'attr' : {'class': 'd-flex' }}) }}
+             {{ form_widget(searchForm.title) }}
+            {{ form_widget(searchForm.save) }}
+            {{ form_end(searchForm) }}
+        </div>
+    </div>
+
+    <table class="table table-hover" style="width: 85%;margin: 0 7%;">
+        <thead>
+        <tr>
+            <th scope="col">Titre</th>
+            <th scope="col">Description</th>
+            <th scope="col">Publié à</th>
+            <th scope="col">Catégorie</th>
+            <th scope="col">Prix</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for announce in announces %}
+        <tr>
+            <td>{{ announce.title }}</td>
+            <td>{{ announce.description }}</td>
+            <td scope="row">{{ announce.publishedAt|format_datetime(locale='fr') }}</td>
+            <td>{{ announce.price }}</td>
+            <td>{{ announce.category.name }}</td>
+            <td><a href="">Voir plus</a> </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

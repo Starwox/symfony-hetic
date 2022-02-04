@@ -25,15 +25,27 @@ class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($options['hidden']) {
+            $rolesTypes = array_flip(User::ROLES_TYPES);
+            $rolesUsers = array_flip(User::ROLES_USER);
+            $choices = array_merge($rolesTypes, $rolesUsers);
+        } else {
+            $choices = array_flip(User::ROLES_TYPES);
+        }
+
         $builder
             ->add('email', EmailType::class)
-            ->add('password', PasswordType::class)
-            ->add('username', TextType::class)
+            ->add('password', PasswordType::class, [
+                'label' => 'Mot de passe',
+            ])
+            ->add('username', TextType::class, [
+                'label' => 'Pseudonyme'
+            ])
             ->add('roles', ChoiceType::class, [
                 'label' => 'Vous êtes:',
                 'multiple' => true,
                 'expanded' => true,
-                'choices' => array_flip(User::ROLES_TYPES)
+                'choices' => $choices
             ])
             ->add('save', SubmitType::class)
         ;
@@ -43,6 +55,7 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'hidden' => false,
         ]);
     }
 }
