@@ -8,6 +8,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Announce;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,14 +17,21 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AnnounceController extends AbstractController
 {
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @Route("/", name="home")
      */
-    public function number()
+    public function index()
     {
 
-        return new Response(
-            '<html><body>Lucky number</body></html>'
-        );
+        $announces = $this->em->getRepository(Announce::class)->findAll();
+
+        return $this->render('announce/home.html.twig', [
+            'announces' => $announces,
+        ]);
     }
 }

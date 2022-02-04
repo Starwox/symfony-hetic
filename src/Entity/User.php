@@ -10,6 +10,17 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    public const ROLES_TYPES = [
+        'ROLE_SELLER' => 'Vendeur',
+        'ROLE_BUYER' => 'Acheteur'
+    ];
+
+    public const ROLES_USER = [
+        'ROLE_ADMIN' => 'Administrateur',
+        'ROLE_USER' => 'Utilisateur'
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
