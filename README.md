@@ -20,3 +20,7 @@ Data:
     php bin/console doc:mig:mig
     php bin/console doctrine:fixtures:load
 
+Pour se connecter en administrateur:
+    
+    Email: root@gmail.com
+    Mot de passe: root
